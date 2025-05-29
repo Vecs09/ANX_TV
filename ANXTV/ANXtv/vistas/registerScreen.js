@@ -1,21 +1,37 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { register } from "../navegacion/api";
 
 export default function RegisterScreen() {
   const navigation = useNavigation();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleRegister = () => {
-    // Aquí podrías agregar validación o conexión a tu backend
+  const handleRegister = async () => {
     if (email && password && password === confirmPassword) {
-      navigation.navigate('Login'); // Después de registrarse, redirige a Login
+      try {
+        const response = await register(email, password);
+        if (response.status === 201) {
+          alert("Cuenta creada exitosamente");
+          navigation.navigate("Login");
+        } else {
+          alert(response.data.message || "No se pudo registrar");
+        }
+      } catch (error) {
+        console.error(error);
+        alert("Ocurrió un error durante el registro");
+      }
     } else {
-      // Puedes agregar feedback de error si no coinciden las contraseñas
-      alert('Las contraseñas no coinciden o hay campos vacíos');
+      alert("Las contraseñas no coinciden o hay campos vacíos");
     }
   };
 
@@ -53,7 +69,7 @@ export default function RegisterScreen() {
         <Text style={styles.buttonText}>Registrarse</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+      <TouchableOpacity onPress={() => navigation.navigate("Login")}>
         <Text style={styles.link}>¿Ya tienes cuenta? Inicia sesión</Text>
       </TouchableOpacity>
     </View>
@@ -63,37 +79,37 @@ export default function RegisterScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: "#000",
     padding: 20,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   title: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 28,
     marginBottom: 30,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   input: {
-    backgroundColor: '#1c1c1c',
-    color: '#fff',
+    backgroundColor: "#1c1c1c",
+    color: "#fff",
     padding: 12,
     borderRadius: 8,
     marginBottom: 15,
   },
   button: {
-    backgroundColor: '#FFD700',
+    backgroundColor: "#FFD700",
     padding: 14,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 10,
   },
   buttonText: {
-    color: '#000',
-    fontWeight: 'bold',
+    color: "#000",
+    fontWeight: "bold",
   },
   link: {
-    color: '#FFD700',
-    textAlign: 'center',
+    color: "#FFD700",
+    textAlign: "center",
     marginTop: 10,
   },
 });
