@@ -9,37 +9,57 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Platform,
+  Image,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { Video } from 'expo-video'; // ✅ nuevo paquete
+import { Video } from 'expo-video'; 
 import CustomHeader from '../componentes/customHeader'; 
 
 export default function UploadScreen() {
   const [video, setVideo] = useState(null);
+  const [thumbnail, setThumbnail] = useState(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [privacy, setPrivacy] = useState('public');
 
- const pickVideo = async () => {
-  console.log('Intentando abrir galería...');
-  const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-  if (status !== 'granted') {
-    Alert.alert('Permiso denegado', 'Necesitas permitir acceso a la galería.');
-    return;
-  }
+  const pickVideo = async () => {
+    console.log('Intentando abrir galería...');
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permiso denegado', 'Necesitas permitir acceso a la galería.');
+      return;
+    }
 
-  const result = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: [ImagePicker.MediaType.Video],
-    allowsEditing: false,
-    quality: 1,
-  });
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: [ImagePicker.MediaType.Video],
+      allowsEditing: false,
+      quality: 1,
+    });
 
-  console.log('Resultado:', result);
+    console.log('Resultado:', result);
 
-  if (!result.canceled && result.assets.length > 0) {
-    setVideo(result.assets[0].uri);
-  }
-};
+    if (!result.canceled && result.assets.length > 0) {
+      setVideo(result.assets[0].uri);
+    }
+  };
+
+  const pickThumbnail = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permiso denegado', 'Necesitas permitir acceso a la galería.');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled && result.assets.length > 0) {
+      setThumbnail(result.assets[0].uri);
+    }
+  };
 
   const uploadVideo = () => {
     if (!video || !title) {
@@ -49,6 +69,7 @@ export default function UploadScreen() {
 
     Alert.alert('Subido', 'Tu video ha sido subido exitosamente');
     setVideo(null);
+    setThumbnail(null);
     setTitle('');
     setDescription('');
     setPrivacy('public');
@@ -74,6 +95,14 @@ export default function UploadScreen() {
               />
             ) : (
               <Text style={styles.videoPickerText}>Toca para seleccionar un video</Text>
+            )}
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.thumbnailPicker} onPress={pickThumbnail}>
+            {thumbnail ? (
+              <Image source={{ uri: thumbnail }} style={styles.thumbnailPreview} />
+            ) : (
+              <Text style={styles.videoPickerText}>Seleccionar miniatura</Text>
             )}
           </TouchableOpacity>
 
@@ -150,6 +179,23 @@ const styles = StyleSheet.create({
   videoPreview: {
     width: '100%',
     height: '100%',
+  },
+  thumbnailPicker: {
+    height: 150,
+    width: '100%',
+    backgroundColor: '#1E1E1E',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#333',
+    overflow: 'hidden',
+  },
+  thumbnailPreview: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
   },
   input: {
     width: '100%',
