@@ -5,23 +5,31 @@ import { useNavigation } from '@react-navigation/native';
 export default function RegisterScreen() {
   const navigation = useNavigation();
 
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleRegister = () => {
-    // Aquí podrías agregar validación o conexión a tu backend
-    if (email && password && password === confirmPassword) {
+    // Validación básica
+    if (username && email && password && password === confirmPassword) {
       navigation.navigate('Login'); // Después de registrarse, redirige a Login
     } else {
-      // Puedes agregar feedback de error si no coinciden las contraseñas
-      alert('Las contraseñas no coinciden o hay campos vacíos');
+      alert('Por favor completa todos los campos correctamente');
     }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Crear cuenta</Text>
+
+      <TextInput
+        style={styles.input}
+        placeholder="Nombre de usuario"
+        placeholderTextColor="#aaa"
+        value={username}
+        onChangeText={setUsername}
+      />
 
       <TextInput
         style={styles.input}
