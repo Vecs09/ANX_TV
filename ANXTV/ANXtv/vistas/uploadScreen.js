@@ -9,14 +9,15 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Platform,
+  Image,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import * as VideoThumbnails from "expo-video-thumbnails"; // Importa el paquete correcto
-import { Video } from "expo-av"; // Corregido import para video
+import { Video } from "expo-av"; // Corrige importación para video
 import CustomHeader from "../componentes/customHeader";
 
 export default function UploadScreen() {
   const [video, setVideo] = useState(null);
+  const [thumbnail, setThumbnail] = useState(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [privacy, setPrivacy] = useState("public");
@@ -42,6 +43,27 @@ export default function UploadScreen() {
     }
   };
 
+  const pickThumbnail = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert(
+        "Permiso denegado",
+        "Necesitas permitir acceso a la galería."
+      );
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled && result.assets.length > 0) {
+      setThumbnail(result.assets[0].uri);
+    }
+  };
+
   const uploadVideo = async () => {
     if (!video || !title) {
       Alert.alert(
@@ -52,37 +74,33 @@ export default function UploadScreen() {
     }
 
     try {
-      // Generar miniatura
-      const { uri: thumbnailUri } = await VideoThumbnails.getThumbnailAsync(
-        video,
-        { time: 1000 }
-      );
-
       const data = new FormData();
 
       data.append("file", {
         uri: video,
-        type: "video/mp4", // Puedes ajustar el tipo si es necesario
+        type: "video/mp4",
         name: "video.mp4",
       });
 
-      data.append("thumbnail", {
-        uri: thumbnailUri,
-        type: "image/jpeg",
-        name: "thumbnail.jpg",
-      });
+      if (thumbnail) {
+        data.append("thumbnail", {
+          uri: thumbnail,
+          type: "image/jpeg",
+          name: "thumbnail.jpg",
+        });
+      }
 
       data.append("title", title);
       data.append("description", description);
       data.append("state", privacy === "public" ? "0" : "1");
-      data.append("profileId", "1"); // Cambia aquí al ID real del usuario
+      data.append("profileId", "1"); // Cambia al ID real del usuario
 
       const response = await fetch("http://192.168.1.80:30000/video/upload", {
         method: "POST",
-        body: data,
         headers: {
           "Content-Type": "multipart/form-data",
         },
+        body: data,
       });
 
       const resJson = await response.json();
@@ -90,6 +108,7 @@ export default function UploadScreen() {
       if (response.ok) {
         Alert.alert("Subido", "Tu video ha sido subido exitosamente");
         setVideo(null);
+        setThumbnail(null);
         setTitle("");
         setDescription("");
         setPrivacy("public");
@@ -124,6 +143,20 @@ export default function UploadScreen() {
               <Text style={styles.videoPickerText}>
                 Toca para seleccionar un video
               </Text>
+            )}
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.thumbnailPicker}
+            onPress={pickThumbnail}
+          >
+            {thumbnail ? (
+              <Image
+                source={{ uri: thumbnail }}
+                style={styles.thumbnailPreview}
+              />
+            ) : (
+              <Text style={styles.videoPickerText}>Seleccionar miniatura</Text>
             )}
           </TouchableOpacity>
 
@@ -212,6 +245,23 @@ const styles = StyleSheet.create({
   videoPreview: {
     width: "100%",
     height: "100%",
+  },
+  thumbnailPicker: {
+    height: 150,
+    width: "100%",
+    backgroundColor: "#1E1E1E",
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: "#333",
+    overflow: "hidden",
+  },
+  thumbnailPreview: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
   },
   input: {
     width: "100%",

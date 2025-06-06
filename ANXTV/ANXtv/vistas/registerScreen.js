@@ -42,6 +42,14 @@ export default function RegisterScreen() {
 
       <TextInput
         style={styles.input}
+        placeholder="Nombre de usuario"
+        placeholderTextColor="#aaa"
+        value={username}
+        onChangeText={setUsername}
+      />
+
+      <TextInput
+        style={styles.input}
         placeholder="Correo electrónico"
         placeholderTextColor="#aaa"
         value={email}
