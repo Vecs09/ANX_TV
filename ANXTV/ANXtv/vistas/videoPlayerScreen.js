@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   View,
   Text,
@@ -6,15 +6,33 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
-} from 'react-native';
-import { Video } from 'expo-av';
-import { Feather } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+} from "react-native";
+import { Video } from "expo-av";
+import { Feather } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 const suggestedVideos = [
-  { id: '1', title: 'Por que no debes ir a cachana #1', author: 'canelo', videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4' },
-  { id: '2', title: 'Por que no debes ir a cachana #2', author: 'canelo', videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4' },
-  { id: '3', title: 'Por que no debes ir a cachana #3', author: 'canelo', videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4' },
+  {
+    id: "1",
+    title: "Por que no debes ir a cachana #1",
+    author: "canelo",
+    videoUrl:
+      "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+  },
+  {
+    id: "2",
+    title: "Por que no debes ir a cachana #2",
+    author: "canelo",
+    videoUrl:
+      "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+  },
+  {
+    id: "3",
+    title: "Por que no debes ir a cachana #3",
+    author: "canelo",
+    videoUrl:
+      "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+  },
 ];
 
 export default function VideoPlayerScreen({ route }) {
@@ -42,7 +60,9 @@ export default function VideoPlayerScreen({ route }) {
 
         <View style={styles.channelCard}>
           <Image
-            source={{ uri: 'https://img.asmedia.epimg.net/resizer/v2/LNDQCEBF45BTXD4T3FEFLH5R44.png?auth=d35e34c78b3a6a0c0587a65db655fdca43cffe8fbc6d4e139c291a533b32b056&width=1472&height=1104&smart=true' }}
+            source={{
+              uri: "https://img.asmedia.epimg.net/resizer/v2/LNDQCEBF45BTXD4T3FEFLH5R44.png?auth=d35e34c78b3a6a0c0587a65db655fdca43cffe8fbc6d4e139c291a533b32b056&width=1472&height=1104&smart=true",
+            }}
             style={styles.channelImage}
           />
           <View style={styles.channelDetails}>
@@ -59,15 +79,17 @@ export default function VideoPlayerScreen({ route }) {
           <TouchableOpacity
             key={item.id}
             style={styles.suggestedVideo}
-            onPress={() => navigation.replace('VideoPlayer', { video: item })}
+            onPress={() => navigation.replace("VideoPlayer", { video: item })}
           >
             <Image
-              source={{ uri: 'https://placekitten.com/300/180' }}
+              source={{ uri: "https://placekitten.com/300/180" }}
               style={styles.suggestedThumbnail}
             />
             <View style={styles.suggestedInfo}>
               <Text style={styles.suggestedTitleText}>{item.title}</Text>
-              <Text style={styles.suggestedMeta}>2.4K vistas · hace 3 días</Text>
+              <Text style={styles.suggestedMeta}>
+                2.4K vistas · hace 3 días
+              </Text>
             </View>
           </TouchableOpacity>
         ))}
@@ -84,27 +106,27 @@ const Action = ({ icon, label }) => (
 );
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#000' },
-  video: { width: '100%', height: 250 },
+  container: { flex: 1, backgroundColor: "#000" },
+  video: { width: "100%", height: 250 },
   detailsContainer: { padding: 12 },
-  title: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
-  stats: { color: '#aaa', marginVertical: 4 },
+  title: { color: "#fff", fontSize: 18, fontWeight: "bold" },
+  stats: { color: "#aaa", marginVertical: 4 },
   actionsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginVertical: 12,
   },
-  action: { alignItems: 'center' },
-  actionLabel: { color: '#fff', fontSize: 12, marginTop: 4 },
+  action: { alignItems: "center" },
+  actionLabel: { color: "#fff", fontSize: 12, marginTop: 4 },
 
   channelCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#1a1a1a',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#1a1a1a",
     padding: 12,
     borderRadius: 10,
     marginVertical: 12,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
@@ -115,51 +137,51 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
     borderWidth: 1,
-    borderColor: '#FFD700',
+    borderColor: "#FFD700",
   },
   channelDetails: {
     flex: 1,
     marginLeft: 12,
   },
   channelName: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   subscribers: {
-    color: '#ccc',
+    color: "#ccc",
     fontSize: 13,
     marginTop: 2,
   },
   subscribeButton: {
-    backgroundColor: '#FFD700',
+    backgroundColor: "#FFD700",
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 20,
-    shadowColor: '#FFD700',
+    shadowColor: "#FFD700",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.5,
     shadowRadius: 3,
     elevation: 3,
   },
   subscribeText: {
-    color: '#000',
-    fontWeight: 'bold',
+    color: "#000",
+    fontWeight: "bold",
     fontSize: 14,
   },
 
   // Videos sugeridos
   suggestedTitle: {
     fontSize: 20,
-    color: '#FFD700',
-    fontWeight: 'bold',
+    color: "#FFD700",
+    fontWeight: "bold",
     marginTop: 20,
     marginBottom: 10,
   },
   suggestedVideo: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 12,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: "#1a1a1a",
     padding: 8,
     borderRadius: 10,
   },
@@ -167,20 +189,20 @@ const styles = StyleSheet.create({
     width: 120,
     height: 70,
     borderRadius: 8,
-    backgroundColor: '#444',
+    backgroundColor: "#444",
   },
   suggestedInfo: {
     marginLeft: 10,
-    justifyContent: 'center',
+    justifyContent: "center",
     flex: 1,
   },
   suggestedTitleText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   suggestedMeta: {
-    color: '#aaa',
+    color: "#aaa",
     fontSize: 12,
     marginTop: 2,
   },

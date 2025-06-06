@@ -9,50 +9,46 @@ import {
 } from "react-native";
 import CustomHeader from "../componentes/customHeader";
 import { getProfile } from "../navegacion/api";
-
-const videos = [
-  {
-    id: "1",
-    title: "Por qué no debes ir a la cachana #1",
-    views: "2.4K",
-    date: "Hace 3 días",
-  },
-  {
-    id: "2",
-    title: "Por qué no debes ir a la cachana #2",
-    views: "2.4K",
-    date: "Hace 3 días",
-  },
-  {
-    id: "3",
-    title: "Por qué no debes ir a la cachana #3",
-    views: "2.4K",
-    date: "Hace 3 días",
-  },
-  {
-    id: "4",
-    title: "Por qué no debes ir a la cachana #4",
-    views: "2.4K",
-    date: "Hace 3 días",
-  },
-  {
-    id: "5",
-    title: "Por qué no debes ir a la cachana #5",
-    views: "2.4K",
-    date: "Hace 3 días",
-  },
-];
+import axios from "axios";
 
 export default function ProfileScreen() {
   const [profile, setProfile] = useState(null);
+  const [userVideos, setUserVideos] = useState([]);
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await getProfile(); // Esto hace GET /account
+        const response = await getProfile(); // GET /account
         setProfile(response.data);
+
+        // Luego que cargamos el perfil, cargamos videos del usuario
+        if (response.data?.uuid) {
+          fetchUserVideos(response.data.uuid);
+        }
       } catch (error) {
         console.error("Error al cargar perfil:", error);
+      }
+    };
+
+    const fetchUserVideos = async (userId) => {
+      try {
+        // Asumo que tienes un endpoint que retorna videos por userId
+        const res = await axios.get(
+          `http://192.168.1.80:30000/video/get-by-user/${userId}`
+        );
+
+        // Formateamos videos, adapta según la respuesta real
+        const videosData = res.data?.data?.data || [];
+        const formattedVideos = videosData.map((item) => ({
+          id: item.id.toString(),
+          title: item.title,
+          views: item.views || "0",
+          date: new Date(item.createdAt).toLocaleDateString() || "---",
+        }));
+
+        setUserVideos(formattedVideos);
+      } catch (error) {
+        console.error("Error al cargar videos del usuario:", error);
       }
     };
 
@@ -92,7 +88,7 @@ export default function ProfileScreen() {
         </TouchableOpacity>
         <View style={styles.statsRow}>
           <Text style={styles.stat}>
-            <Text style={styles.statNumber}>74</Text> Videos
+            <Text style={styles.statNumber}>{userVideos.length}</Text> Videos
           </Text>
           <Text style={styles.stat}>
             <Text style={styles.statNumber}>134</Text> Suscripciones
@@ -103,12 +99,17 @@ export default function ProfileScreen() {
         </View>
       </View>
 
-      <Text style={styles.videosHeader}>Videos</Text>
+      <Text style={styles.videosHeader}>Videos Subidos</Text>
       <FlatList
-        data={videos}
+        data={userVideos}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 20 }}
+        ListEmptyComponent={
+          <Text style={{ color: "#888", textAlign: "center", marginTop: 20 }}>
+            No has subido videos todavía.
+          </Text>
+        }
       />
     </View>
   );

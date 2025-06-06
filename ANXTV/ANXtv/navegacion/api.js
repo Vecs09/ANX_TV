@@ -13,3 +13,7 @@ export const register = async (email, password, username) => {
 export const getProfile = async () => {
   return axios.get(`${API_URL}/account`);
 };
+
+export const getAllVideos = async () => {
+  return axios.get(`${API_URL}/video/get-all`);
+};
