@@ -13,13 +13,14 @@ export default function RegisterScreen() {
   const navigation = useNavigation();
 
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleRegister = async () => {
-    if (email && password && password === confirmPassword) {
+    if (email && username && password && password === confirmPassword) {
       try {
-        const response = await register(email, password);
+        const response = await register(email, password, username);
         if (response.status === 201) {
           alert("Cuenta creada exitosamente");
           navigation.navigate("Login");
@@ -45,6 +46,14 @@ export default function RegisterScreen() {
         placeholderTextColor="#aaa"
         value={email}
         onChangeText={setEmail}
+      />
+
+      <TextInput
+        style={styles.input}
+        placeholder="Nombre de usuario"
+        placeholderTextColor="#aaa"
+        value={username}
+        onChangeText={setUsername}
       />
 
       <TextInput

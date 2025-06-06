@@ -23,7 +23,7 @@ export default function LoginScreen({ onLogin }) {
 
     try {
       const response = await axios.post(
-        "http://192.168.1.80:30000/accounts/auth",
+        "http://192.168.1.80:30000/auth/login",
         {
           email,
           password,
@@ -41,7 +41,7 @@ export default function LoginScreen({ onLogin }) {
       }
     } catch (error) {
       console.error(error);
-      Alert.alert("Error", "No se pudo conectar con el servidor");
+      Alert.alert("Error", "Contraseña Incorrecta");
     }
   };
 
